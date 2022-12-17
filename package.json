@@ -1,0 +1,22 @@
+{
+  "name": "cloudflare-d1-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "create-db": "wrangler d1 create",
+    "create-table:local": "wrangler d1 execute DB --local --file=./schema.sql",
+    "create-table:prod": "wrangler d1 execute DB --file=./schema.sql",
+    "exec-sql": "wrangler d1 execute DB --local --command",
+    "dev": "wrangler pages dev . --d1=DB --local --persist",
+    "deploy": "wrangler pages publish ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20221111.1",
+    "typescript": "^4.9.4",
+    "wrangler": "^2.6.2"
+  }
+}

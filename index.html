@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>cloudflare-d1-boilerplate</title>
+    <meta charset="utf-8" />
+    <script src="//unpkg.com/alpinejs" defer></script>
+  </head>
+  <body>
+    <ul x-data="memo">
+      <input type="text" x-model="content" /><button @click="insertItem">insert</button>
+      <template x-for="{id, content} in items">
+        <li>
+          <span x-text="content"></span>
+          <button @click="updateItem(id, content)">update</button>
+          <button @click="deleteItem(id)">delete</button>
+        </li>
+      </template>
+    </ul>
+  </body>
+  <script>
+    async function api(params = {}, resourceId = '') {
+      const response = await fetch(`/memos/${resourceId}`, params);
+      return await response.json();
+    }
+
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('memo', () => ({
+        items: [],
+        content: '',
+        async init() {
+          await this.listItems();
+        },
+        async listItems() {
+          this.items = await api();
+        },
+        async insertItem() {
+          await api({
+            method: 'POST',
+            body: this.content,
+          });
+          await this.listItems();
+        },
+        async updateItem(id, oldContent) {
+          const newContent = window.prompt('content', oldContent);
+          await api(
+            {
+              method: 'PUT',
+              body: newContent,
+            },
+            id
+          );
+          await this.listItems();
+        },
+        async deleteItem(id) {
+          await api(
+            {
+              method: 'DELETE',
+            },
+            id
+          );
+          await this.listItems();
+        },
+      }));
+    });
+  </script>
+</html>
